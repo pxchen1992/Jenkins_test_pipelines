@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    
+    environment {
+        /*
+            **NOTE: 
+            1. Just change the credentials name, DON'T change others
+            2. Install Azure Credentials plugin
+            3. Install az cli(https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) 
+            4. Login and create a contributor for Jenkins Credential Service Principal
+                4.1 az login
+                4.2 az ad sp create-for-rbac --role="Contributor" --name JenkinsCredentialServicePrincipal --scopes="/subscriptions/932ec0a4-a1dc-4d29-9f2f-574821234567"
+                ** Change the subscriptions id to your own
+                ** Save the credentials information to a safe place
+            5. Create an Azure Service Principal credential in Jenkins Credential
+                	Subscription ID:  Subscription ID
+                	Client ID: appId in 4.2 output
+                	Client Secret: password in 4.2 output
+                	Tenant ID: tenant in 4.2 output
+                    And Verify  Service Principal
+        */
+        ARM = credentials('AZCredentialServicePrincipal')
+    }
+    stages {
+        stage('List VM') {
+            steps {
+                /*
+                    **NOTE: Install az cli on your node server
+                */
+                sh """
+                    az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET -t $ARM_TENANT_ID
+                    az vm list -o table
+                """
+                sleep 10
+            }
+        }
+    }
+}

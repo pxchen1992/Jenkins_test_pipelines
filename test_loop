@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    /*
+        The crontab will set up automatically
+    */
+    triggers {
+      cron '''TZ=Australia/Brisbane
+        H/10 * * * 4'''
+    }
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+                sh 'date "+%T"'
+            }
+        }
+    }
+}

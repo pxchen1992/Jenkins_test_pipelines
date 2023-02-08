@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'create new file test.txt'
+                sh 'echo "Hello" >> test.txt'
+                sh 'cat test.txt'
+            }
+        }
+    }
+    
+    post {
+      always {
+        // One or more steps need to be included within each condition's block.
+        echo "Start clean workspace"
+        cleanWs()
+        echo "Workspace cleaned"
+        sh 'ls -la'
+        // Failure because test.txt had already been cleaned up
+        sh 'cat test.txt'
+      }
+      success {
+        echo "In post-success"
+      }
+      failure {
+        echo "In post-failure"
+      }
+    }    
+}

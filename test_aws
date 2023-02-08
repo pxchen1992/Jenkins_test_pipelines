@@ -1,0 +1,29 @@
+pipeline {
+
+    agent {
+        /*
+            **NOTE: Running on a node. change to agent any if have no node
+        */
+        //label 'Laptop'
+        label 'Large'
+    }
+
+    stages {
+        stage('S3_ls') {
+            steps {
+                /*
+                **** Note: 
+                1. You need to install the CloudBees AWS Credentials & Pipeline: AWS Steps plugin to use withAWS
+                2. Change the credentials to your own before run the pipeline
+                3. Install aws cli on your Jenkins Node server  
+                ****
+                */
+                withAWS(credentials: 'aws_jr_william') {
+                    sh 'aws s3 ls'
+                }
+                
+                sleep 10
+            }
+        }
+    }
+}
