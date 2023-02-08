@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                timestamps {
+                    echo 'Hello World'
+                }
+            }
+        }
+        stage('Sanity Check') {
+			steps {
+				echo 'Sanity checking...'
+				script {
+					timeout(time: 10, unit: 'SECONDS') {
+						input "Does the UAT environment look OK, should we continue deploying to Prod?"
+					}
+				}
+			}
+		}
+        stage('Hello Again') {
+            steps {
+                timestamps {
+                    echo 'Nice to meet you again'
+                }
+            }
+        }		
+    }
+}
