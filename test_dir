@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Default dir') {
+            steps {
+                sh "pwd"
+                sh "mkdir -p new_dir"
+                sh "ls"
+            }
+        }
+        stage('new_dir') {
+            steps {
+                dir('new_dir') {
+                    sh "pwd"
+                }
+            }
+        }
+    }
+}
