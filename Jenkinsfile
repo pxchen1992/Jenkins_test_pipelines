@@ -1,24 +1,15 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven'
-    }
     parameters{
         choice(name: 'VERSION', choice:['1.1.0', '1.2.0', '1.3.0'], description:'')
         booleanParam(name: 'executeTests', defaultValue: true, description:'')
-
     }
-    environment {
-        NEW_VERSION = '1.3.0'
-        SERVER_CREDENTIALS = credentials('server-credentials')
-
     }
 
     stages {
         stage('build') {
             steps {
                 echo 'building the application... '
-                sh "mvn install"
             }
         }
       
@@ -37,11 +28,6 @@ pipeline {
             steps {
                 echo 'deploy the application...'
                 sh "deploying version ${params.VERSION}"
-                withCredentials([
-                    usernamePassword(credentials: 'server-credentials', usernameVariable: USER, passwordVariable: PWD)
-                ]) {
-                    sh " some script ${USER} ${PWD}"
-                }
             }
         }
         post{
